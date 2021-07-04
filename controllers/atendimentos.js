@@ -1,8 +1,8 @@
 const Atendimento = require('../models/atendimentos')
 
 module.exports = app => {
-  app.get('/atendimentos', (request, response) => {
-    response.send('Você está na rota de atendimentos e está realizando um GET')
+  app.get('/atendimentos', (_, response) => {
+    Atendimento.lista(response)
   });
 
   app.post('/atendimentos', (request, response) => {
