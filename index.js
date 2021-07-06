@@ -7,7 +7,7 @@ conexao.connect(erro => {
     console.log(erro);
     
   } else {
-    console.log('Conectado com sucesso!');
+    console.log('Conectado ao banco de dados com sucesso!');
 
     Tabelas.init(conexao);
     const app = customExpress();
