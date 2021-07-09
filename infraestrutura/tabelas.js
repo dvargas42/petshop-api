@@ -7,7 +7,8 @@ class Tabelas {
   }
 
   criarAtendimentos() {
-    const sql = 'CREATE TABLE IF NOT EXISTS atendimentos (\
+    const sql =
+      "CREATE TABLE IF NOT EXISTS atendimentos (\
       id int NOT NULL AUTO_INCREMENT, \
       cliente varchar(50) NOT NULL, \
       pet varchar(20), \
@@ -17,33 +18,32 @@ class Tabelas {
       dataCriacao datetime NOT NULL, \
       status varchar(20) NOT NULL, \
       observacoes text,\
-      primary key(id))';
+      primary key(id))";
 
-    this.conexao.query(sql, erro => {
+    this.conexao.query(sql, (erro) => {
       if (erro) {
         console.log(erro);
-
       } else {
-        console.log('Tabela atendimentos criada com sucesso!')
+        console.log("Tabela atendimentos criada com sucesso!");
       }
     });
-  };
+  }
 
   criarPets() {
-    const sql = 'CREATE TABLE IF NOT EXISTS pets (\
+    const sql =
+      "CREATE TABLE IF NOT EXISTS pets (\
       id int NOT NULL AUTO_INCREMENT, \
-      nome varchar(50), \
+      nome varchar(11), \
       imagem varchar(200), \
-      PRIMARY KEY (id))';
+      PRIMARY KEY (id))";
 
-    this.conexao.query(sql, erro => {
+    this.conexao.query(sql, (erro) => {
       if (erro) {
         console.log(erro);
-
       } else {
-        console.log('Tabela Pets foi criada com sucesso!')
+        console.log("Tabela Pets foi criada com sucesso!");
       }
-    })
-  };
+    });
+  }
 }
-module.exports = new Tabelas;
+module.exports = new Tabelas();
