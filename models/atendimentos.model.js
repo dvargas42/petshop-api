@@ -8,7 +8,7 @@ class Atendimento {
     this.dataEhValida = ({ data, dataCriacao }) =>
       moment(data).isSameOrAfter(dataCriacao);
 
-    this.clienteEhValido = (tamanho) => tamanho >= 5;
+    this.clienteEhValido = (tamanho) => tamanho === 11;
 
     this.validacoes = [
       {
@@ -19,9 +19,8 @@ class Atendimento {
       {
         nome: "cliente",
         valido: this.clienteEhValido,
-        mensagem: "Cliente deve ter pelo menos cinco caracteres!",
+        mensagem: "CPF do cliente deve ter 11 caracteres!",
       },
-      0,
     ];
 
     this.valida = (parametros) =>
@@ -61,63 +60,37 @@ class Atendimento {
     }
   }
 
-  lista(res) {
-    const sql = "SELECT * FROM atendimentos";
-
-    conexao.query(sql, (erro, resultados) => {
-      if (erro) {
-        res.status(400).json(erro);
-      } else {
-        res.status(200).json(resultados);
-      }
-    });
+  lista() {
+    return repositorio.lista();
   }
 
-  buscaPorId(id, res) {
-    const sql = `SELECT * FROM atendimentos WHERE id=${id}`;
-
-    conexao.query(sql, async (erro, resultados) => {
+  buscaPorId(id) {
+    return repositorio.buscaPorId(id).then((resultados) => {
       const resultado = resultados[0];
       const cpf = resultado.cliente;
 
-      if (erro) {
-        res.status(400).json(erro);
-      } else {
-        const { data } = await axios.get(`http://localhost:8082/${cpf}`);
+      return axios.get(`http://localhost:8082/${cpf}`).then((resp) => {
+        resultado.cliente = resp.data;
 
-        resultado.cliente = data;
-        res.status(200).json(resultado);
-      }
+        return resultado;
+      });
     });
   }
 
-  altera(id, valores, res) {
-    const sql = `UPDATE atendimentos SET ? WHERE id=?`;
-
+  altera(id, valores) {
     if (valores && valores.data) {
-      valores.data = moment(valores?.data, "DD/MM/YYYY").format(
+      valores.data = moment(valores.data, "DD/MM/YYYY").format(
         "YYYY-MM-DD HH:MM:SS"
       );
     }
-
-    conexao.query(sql, [valores, id], (erro, resultados) => {
-      if (erro) {
-        res.status(400).json(erro);
-      } else {
-        res.status(200).json({ ...valores, id });
-      }
+    return repositorio.altera(id, valores).then(() => {
+      return { ...valores, id };
     });
   }
 
-  deleta(id, res) {
-    const sql = `DELETE FROM atendimentos WHERE id=${id}`;
-
-    conexao.query(sql, (erro, resultados) => {
-      if (erro) {
-        res.status(400).json(erro);
-      } else {
-        res.status(200).json({ id });
-      }
+  deleta(id) {
+    return repositorio.deleta(id).then((atendimento) => {
+      return atendimento;
     });
   }
 }
