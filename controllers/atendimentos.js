@@ -2,13 +2,17 @@ const Atendimento = require("../models/atendimentos.model");
 
 module.exports = (app) => {
   app.get("/atendimentos", (_, response) => {
-    Atendimento.lista(response);
+    Atendimento.lista(response)
+      .then((atendimentos) => response.json(atendimentos))
+      .catch((erros) => response.status(400).json(erros));
   });
 
   app.get("/atendimentos/:id", (request, response) => {
     const id = parseInt(request.params.id);
 
-    Atendimento.buscaPorId(id, response);
+    Atendimento.buscaPorId(id)
+      .then((atendimento) => response.json(atendimento))
+      .catch((erros) => response.status(400).json(erros));
   });
 
   app.post("/atendimentos", (request, response) => {
@@ -21,16 +25,20 @@ module.exports = (app) => {
       .catch((erros) => response.status(400).json(erros));
   });
 
-  app.patch("/atendimentos/:id", (request, response) => {
+  app.patch("/atendimentos/:id", async (request, response) => {
     const id = parseInt(request.params.id);
     const valores = request.body;
 
-    Atendimento.altera(id, valores, response);
+    Atendimento.altera(id, valores)
+      .then((valores) => response.json(valores))
+      .catch((erros) => response.status(400).json(erros));
   });
 
   app.delete("/atendimentos/:id", (request, response) => {
     const id = parseInt(request.params.id);
 
-    Atendimento.deleta(id, response);
+    Atendimento.deleta(id)
+      .then((atendimento) => response.json(atendimento))
+      .catch((erros) => response.status(400).json(erros));
   });
 };
